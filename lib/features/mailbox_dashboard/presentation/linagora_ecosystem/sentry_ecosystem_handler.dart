@@ -8,6 +8,7 @@ import 'package:tmail_ui_user/features/mailbox_dashboard/domain/linagora_ecosyst
 typedef SetUpSentry = Future<void> Function(SentryConfigLinagoraEcosystem);
 typedef ClearSentry = Future<void> Function();
 typedef ResetSentryReportingConsent = void Function();
+typedef DiscardPendingSentryReports = void Function();
 
 /// Handles ecosystem-owned Sentry configuration.
 class SentryEcosystemHandler
@@ -22,9 +23,13 @@ class SentryEcosystemHandler
     required SetUpSentry setUpSentry,
     required ClearSentry clearSentry,
     required ResetSentryReportingConsent resetSentryReportingConsent,
+    DiscardPendingSentryReports? discardPendingReports,
   })  : _setUpSentry = setUpSentry,
         _clearSentry = clearSentry,
-        _resetSentryReportingConsent = resetSentryReportingConsent;
+        _resetSentryReportingConsent = resetSentryReportingConsent,
+        _discardPendingReports = discardPendingReports;
+
+  final DiscardPendingSentryReports? _discardPendingReports;
 
   @override
   void onAccountChanged() {
@@ -57,6 +62,7 @@ class SentryEcosystemHandler
       logTrace(
         'SentryEcosystemHandler::onEcosystemLoaded: Sentry config is not provided',
       );
+      _discardPendingReports?.call();
       onEcosystemCleared();
     }
   }

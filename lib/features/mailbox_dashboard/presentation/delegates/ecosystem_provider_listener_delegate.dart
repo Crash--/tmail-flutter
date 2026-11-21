@@ -84,6 +84,7 @@ class EcosystemProviderListenerDelegate
             SentryManager.instance.clearUser();
           }
         },
+        discardPendingReports: SentryManager.instance.discardPendingReports,
       ));
     }
   }

@@ -24,3 +24,10 @@ Categories: UX, UI, Product, Architecture, Infra, Tech.
 - Decided by: Crash-- (product owner), [fix plan of #5172](https://github.com/linagora/tmail-flutter/issues/5172#issuecomment-7058350249); the no-network exception: agent ([Crash--/tmail-flutter#1](https://github.com/Crash--/tmail-flutter/pull/1)), to be confirmed by Crash--
 - Why: the exception behind the generic retry banner shows up in Sentry.
 - Scope: mobile and web, every screen that loads the folder list.
+
+## 2026-11-21, [Product] Errors raised before Sentry is configured wait in memory
+
+- Decision: Sentry still starts only once the ecosystem gives its configuration and consent is known; the errors raised before that are kept in memory and sent once both the configuration and the user's choice are known and reporting is allowed. They are dropped without being sent when reporting is not allowed, when the ecosystem has no valid Sentry configuration, when the user's choice cannot be read (later errors then follow the instance default), when the session ends, and in any case five minutes after the first one. At most 20 are kept.
+- Decided by: Crash-- (product owner), [fix plan of #5172](https://github.com/linagora/tmail-flutter/issues/5172#issuecomment-7058350249); the limits (20 errors, 5 minutes): agent ([Crash--/tmail-flutter#1](https://github.com/Crash--/tmail-flutter/pull/1)), to be confirmed by Crash--
+- Why: some customers have Sentry disabled, so nothing may leave the device before the decision, but the errors of the launch are the ones that explain what the user sees first.
+- Scope: mobile and web, every error and message reported to Sentry.

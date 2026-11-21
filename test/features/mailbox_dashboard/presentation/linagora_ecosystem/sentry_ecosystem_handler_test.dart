@@ -48,6 +48,25 @@ void main() {
     expect(clearCalls, 1);
   });
 
+  test('drops the reports kept for Sentry when the loaded ecosystem has no config',
+      () {
+    var discardCalls = 0;
+    final handler = SentryEcosystemHandler(
+      setUpSentry: (_) async {},
+      clearSentry: () async {},
+      resetSentryReportingConsent: () {},
+      discardPendingReports: () {
+        discardCalls++;
+      },
+    );
+
+    handler.onEcosystemLoaded(LinagoraEcosystem.deserialize({
+      'paywallUrlTemplate': 'https://domain.tld/premium',
+    }));
+
+    expect(discardCalls, 1);
+  });
+
   test('resets non-web Sentry consent when the account changes', () {
     var resetCalls = 0;
     final handler = SentryEcosystemHandler(
