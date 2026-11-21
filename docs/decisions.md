@@ -10,3 +10,10 @@ Categories: UX, UI, Product, Architecture, Infra, Tech.
 - Decided by: Crash-- (product owner), [fix plan of #5172](https://github.com/linagora/tmail-flutter/issues/5172#issuecomment-7058350249); the 500 ms delay: agent ([Crash--/tmail-flutter#1](https://github.com/Crash--/tmail-flutter/pull/1)), to be confirmed by Crash--
 - Why: on iOS the first requests after a long time in background can hit a dead socket and show the generic retry banner, while a new connection works at once.
 - Scope: mobile and web, session and folder list loading.
+
+## 2026-11-21, [Architecture] The ecosystem request is retried after a transport error
+
+- Decision: on mobile, when `.well-known/linagora-ecosystem` fails with a network or transport error, it is requested again after 1 s, 4 s and 15 s; any other failure, and any failure on web, is final for the session.
+- Decided by: Crash-- (product owner), [fix plan of #5172](https://github.com/linagora/tmail-flutter/issues/5172#issuecomment-7058350249); the delays and leaving web out: agent ([Crash--/tmail-flutter#1](https://github.com/Crash--/tmail-flutter/pull/1)), to be confirmed by Crash--
+- Why: the ecosystem carries the Sentry configuration; one failed request at launch kept Sentry paused and hid the "Error reporting" toggle for the whole session. On web a missing or CORS-blocked document fails the same way as a dropped connection, so retrying would only delay every ecosystem consumer.
+- Scope: mobile, every ecosystem consumer (Sentry, app grid, premium CTA, Drive attachments, Scribe).
